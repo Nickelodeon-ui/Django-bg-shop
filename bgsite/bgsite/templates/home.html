@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Магазин настольных игр {% endblock %}</title>
+
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static '/boardgames/css/style.css' %}">
+    {% endblock css %}
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Andika+New+Basic:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+
+    {% block script %}
+    <script src="{% static '/boardgames/js/jquery-3.5.1.js' %}"></script>
+    <script src="{% static '/boardgames/js/form.js' %}"></script>
+    <script src="{% static '/boardgames/js/more_bgs_btn.js' %}"></script>
+    {% endblock script %}
+
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href={% url 'catalog' %} class="logo">
+                    <img id=temp src="{% static '/boardgames/img/logo.png' %}" alt="logo" class="logo__img">
+                </a>
+
+                <nav class="menu">
+                    <ul class="menu__list">
+                        <li class="menu__list-item">
+                            <a href="{% url 'hot15bgg' %}" class="menu__list-link">
+                                Топ 15 BGG
+                            </a>
+                        </li>
+                        <li id="basket" class="menu__list-item">
+                            <a href="{% url 'cart' %}" class="menu__list-link">
+                                Корзина {% if cart.total_product %} {{cart.total_product}} {% endif %}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="user_nav">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="user_nav-link">Выход</a>
+                    {% else %}
+                    <a href={% url 'register' %} class="user_nav-link">Регистрация</a>
+                    <a href={% url 'login' %} class="user_nav-link">Вход</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% block  content %}
+    <section class="items">
+        <div class="container">
+            <div class="items__inner">
+
+                {% for boardgame in boardgames  %}
+
+                <a class="item" href={{boardgame.url}}>
+                    <div class="item__inner">
+                        <img src="{{boardgame.img.url}}" alt="bg_logo" class="item__inner-img">
+                        <div class="item__inner-content">
+                            <p class="item__inner-content-name">{{boardgame.name}}</p>
+                            <p class="item__inner-content-quantity">На складе: {{boardgame.quantity}}</p>
+                            <p class="item__inner-content-price">{{boardgame.price}} р.</p>
+                        </div>
+                    </div>
+                </a>
+
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="buttons">
+        <div class="container">
+            <div class="button__inner">
+                <button class="csv" value="CSV" type="csv">
+                    Скачать CSV
+                </button>
+
+                <button class="pdf" value="PDF" type="pdf">
+                    Скачать PDF
+                </button>
+
+                <button class="more" value="More" type="more">
+                    Показать ещё
+                </button>
+            </div>
+        </div>
+    </section>
+    {% endblock %}
+
+    {% block line %}
+    <section class="line-wrapper">
+        <div class="container">
+            <hr class="line">
+        </div>
+    </section>
+    {% endblock line %}
+    
+    <section class="hidden_form">
+        <div class="container">
+            <div class="hidden_form-background"></div>
+            <form action={% url "catalog" %} method="post" class="footer__form">
+                {% csrf_token %}
+                <div class="title_and_cross_wrapper">
+                    <div class="footer_form-title">Свяжитесь с нами</div>
+                    <img src="{% static '/boardgames/img/cross.png' %}" alt="cross" class="footer_form-img">
+                </div>
+                <div class="CustomerNameWrapper">
+                    {{form.customer_name.errors}}
+                    <label class=customer_name_label for="{{ form.customer_name.id_for_label }}">
+                        Ваше имя:
+                    </label>
+                    <br>
+                    {{form.customer_name}}
+                </div>
+                <div class="MessageWrapper">
+                    {{form.message.errors}}
+                    {{form.message.label_tag}}
+                    <br>
+                    {{form.message}}
+                </div>
+                <div class="footer__form-btn-wrapper">
+                    <input type="submit" value="Отправить" class="footer__form-btn">
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__inner">
+
+                <ul class="footer__inner-menu">
+                    <li class="footer__inner-menu-item">
+                        <a href="" class="footer__inner-menu-link">
+                            О нас
+                        </a>
+                    </li>
+                    <li class="footer__inner-menu-item">
+                        <a href="" class="footer__inner-menu-link">
+                            FAQ
+                        </a>
+                    </li>
+                    <li class="footer__inner-menu-item">
+                        <a href="" class="footer__inner-menu-link">
+                            Контакты
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="formstart">
+                    <div class="formstart__inner">
+                        <p class="formstart_message">
+                            Не нашли нужную игру?
+                        </p>
+                        <button class="formstart_btn" value=# type=#>
+                            Свяжитесь с нами
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

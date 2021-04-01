@@ -1,0 +1,60 @@
+{% extends '../home.html' %}
+<!DOCTYPE html>
+{% load static %}
+{% load add_to_cart_filter %}
+{% load one_bg_filter %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    {% block title %}{{boardgame.name}}{% endblock title %}
+
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static '/boardgames/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/boardgames/css/one_bg.css' %}">
+    {% endblock css %}
+
+    {% block script %}
+    <script src="{% static '/boardgames/js/jquery-3.5.1.js' %}"></script>
+    <script src="{% static '/boardgames/js/form.js' %}"></script>
+    <script src="{% static '/boardgames/js/description.js' %}"></script>
+    {% endblock script %}
+</head>
+
+<body>
+    {% block content %}
+    <section class="one_bg">
+        <div class="container">
+            <div class="one_bg_wrapper">
+                <img class="bg_img" src="{{boardgame.img.url}}" alt="#">
+                <div class="one_bg_wrapper-bg_description">
+                    <div class="bg_name">{{boardgame.name}}</div>
+                    <hr>
+                    <div class="bg_price">{{boardgame.price}}<span class="currency"> руб.</span></div>
+                    {% if boardgame not in cart.products.all|get_all_from_cart_products %}
+                    <div class="link_wrapper"><a href="{% url 'add_to_cart' slug=boardgame.slug %}">
+                            <span class="add_to_cart_link">Добавить в корзину</span></a></div>
+                    {% else %}
+                    <div class="link_wrapper"><a href="{% url 'cart' %}">
+                            <span class="check_cart_link">Уже в корзине</span></a></div>
+                    {% endif %}
+                    <hr>
+                    <div class="bg_description">
+                        <div class="visible_description">
+                            {{boardgame.description|visible|linebreaks}}
+                        </div>
+                        {% if boardgame.description|hidden %}
+                        <div class="hidden_description">
+                            {{boardgame.description|hidden|linebreaks}}
+                        </div>
+                        <span class="full_description_link">Полное описание</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock content %}
+</body>
+
+</html>
