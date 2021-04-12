@@ -13,7 +13,9 @@ from .views import (
     RemoveFromCartView,
     UpdateCartView,
     BggHot15View,
-    MoreBoardGamesView
+    MoreBoardGamesView,
+    DownloadCSVView,
+    DownloadPDFView
     )
 
 
@@ -28,5 +30,7 @@ urlpatterns = [
     path("add-to-cart/<slug:slug>", AddToCartView.as_view(), name="add_to_cart"),
     path("remove-from-cart/<slug:slug>", RemoveFromCartView.as_view(), name="remove_from_cart"),
     path("hot15bgg", BggHot15View.as_view(), name="hot15bgg"),
-    path("<slug:slug>", BoardGamesDetailView.as_view(), name="one_bg")
+    path("<slug:slug>", BoardGamesDetailView.as_view(), name="one_bg"),
+    path("download-csv/", DownloadCSVView.as_view(), name="download_csv"),
+    path("download-pdf/", DownloadPDFView.as_view(), name="download_pdf")
 ]   

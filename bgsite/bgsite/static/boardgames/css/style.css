@@ -152,9 +152,8 @@ a:hover {
 }
 
 .button__inner {
+    text-align: center;
     margin-top: 30px;
-    display: flex;
-    justify-content: center;
     margin-bottom: 30px;
 }
 
@@ -168,10 +167,6 @@ a:hover {
 
 .button__inner>button:hover {
     background-color: rgb(156, 43, 96);
-}
-
-button+button {
-    margin-left: 10px;
 }
 
 .line {
@@ -282,10 +277,8 @@ button+button {
 .footer__inner {
     margin-top: 20px;
     display: flex;
-}
-
-.formstart {
-    margin-left: auto;
+    justify-content: space-between;
+    
 }
 
 .formstart__inner {

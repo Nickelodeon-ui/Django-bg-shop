@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import sys
 import os
+from .config import SECRET_KEY, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "apps"))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'h1y19do4_$a4uo21^*0e%uw+!!&e_)9wl27b4i^-oe8*9)#fff'
+SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,9 +140,9 @@ MEDIA_URL = '/media/'
 # Для отправки сообщений на mail.ru
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
-# EMAIL_HOST_USER
-# EMAIL_HOST_PASSWORD 
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True
 # Для доп инфы - https://vivazzi.pro/it/send-email-in-django/
-# SERVER_EMAIL = EMAIL_HOST_USER
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
