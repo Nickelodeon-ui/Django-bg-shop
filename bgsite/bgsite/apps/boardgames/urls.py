@@ -15,13 +15,17 @@ from .views import (
     BggHot15View,
     MoreBoardGamesView,
     DownloadCSVView,
-    DownloadPDFView
+    DownloadPDFView,
+    SearchForBGView,
+    MoreSearchedBoardGamesView,
     )
 
 
 urlpatterns = [
     path('', BoardGamesListView.as_view(), name="catalog"),
+    path('search-for-bg', SearchForBGView.as_view(), name='search_for_bg'),
     path("more-bg/<int:lower_border>", MoreBoardGamesView.as_view(), name="more_bg"),
+     path("more-searched-bg/<int:lower_border>", MoreSearchedBoardGamesView.as_view(), name="more_searched_bg"),
     path("register", RegistrationFormView.as_view(), name="register"),
     path("login", MyLoginView.as_view(), name="login"),
     path("logout", MyLogoutView.as_view(), name="logout"),

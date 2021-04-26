@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    // For suggestion bgs form 
     $(".formstart_btn").click(function () {
         $(".hidden_form-background").show()
         $(".hidden_form-background").css("height", $(document).height());
@@ -18,8 +18,7 @@ $(document).ready(function () {
     });
 
     $(".footer_form-img").click(function () {
-    //    То же самое, что и предыдущая функция, только
-    //       для крестика
+        // Exactly the same only for cross    
         if ($(".hidden_form-background").hasClass("selected")) {
             $(".hidden_form-background").hide();
             $(".footer__form").hide();
@@ -27,4 +26,5 @@ $(document).ready(function () {
             $(".footer__form").removeClass("selected");
         }
     })
+
 });

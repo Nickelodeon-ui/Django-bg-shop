@@ -3,9 +3,16 @@ $(document).ready(function () {
     var bgs_grid = document.getElementById("items__inner")
 
     $(".more").click(function () {
+        var path = window.location.pathname
+        if (path.includes("search-for-bg")) {
+            var url = `./more-searched-bg/${LowerBorder}` 
+        }
+        else {
+            var url = `./more-bg/${LowerBorder}`
+        }
         $.ajax({
             type: 'GET',
-            url: `./more-bg/${LowerBorder}`,
+            url: url,
             success: function (response) {
                 const boardgames = response.data
                 if (boardgames.length != 0) {

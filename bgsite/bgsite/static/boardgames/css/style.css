@@ -47,7 +47,6 @@ a:hover {
     margin: 0;
     padding-top: 20px;
     padding-bottom: 20px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -112,9 +111,52 @@ a:hover {
     background-color: rgb(156, 43, 96);
 }
 
-/* .items {
-    padding-top: 15px;
-} */
+/* Для формы поиска игры */
+
+.search_form {
+    padding-bottom: 20px;
+}
+
+.search_form_inner {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.search_form_input {
+    padding: 6px;
+    min-width: 400px;
+    min-height: 40px;
+    vertical-align: top;
+    border: 1px solid rgb(165, 159, 152);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.submit_wraper {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit_wraper>input[type='image'] {
+    position: relative;
+    right: 35px;
+}
+
+.search_form_btn {
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 0px;
+    vertical-align: top;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: rgb(133, 35, 81);
+}
+
+/* Для грида игр */
 
 .items__inner {
     display: grid;
@@ -137,7 +179,7 @@ a:hover {
     justify-content: center;
 }
 
-.item:hover .item__inner-content-name{
+.item:hover .item__inner-content-name {
     text-decoration: underline;
 }
 
@@ -278,7 +320,7 @@ a:hover {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
-    
+
 }
 
 .formstart__inner {

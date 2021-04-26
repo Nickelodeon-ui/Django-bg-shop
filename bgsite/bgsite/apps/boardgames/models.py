@@ -44,7 +44,7 @@ class BoardGame(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("one_bg", kwargs={"slug": self.slug})
+        return reverse("one_bg", kwargs={"slug": str(self.slug)})
 
 
 class CartProduct(models.Model):

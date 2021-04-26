@@ -59,14 +59,36 @@
         </div>
     </header>
 
+    {% block search_form %}
+    {% if search_form %}
+    <section class="search_form">
+        <div class="container">
+            <form action={% url 'search_for_bg' %} method='POST' class="search_form">
+                <div class="search_form_inner">
+                    {% csrf_token %}
+                    {{search_form.bg_name}}
+                    <div class="submit_wraper">
+                        <input class="search_form_btn" type="submit" value=""></input>
+                        <input type="image" src={% static 'boardgames/img/search_icon.png' %} width='30'></input>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+    {% endblock search_form %}
+
     {% block  content %}
     <section class="items">
         <div class="container">
+            {% if not boardgames %}
+            <h1>Похоже таких игр нет, но вы можете выбрать что-либо из <a href={% url 'catalog' %}><u>нашего каталога</u></a></h1>
+            {% endif %}
             <div class="items__inner" id="items__inner">
 
                 {% for boardgame in boardgames  %}
 
-                <a class="item" href={{boardgame.url}}>
+                <a class="item" href={{boardgame.get_absolute_url}}>
                     <div class="item__inner">
                         <img src="{{boardgame.img.url}}" alt="bg_logo" class="item__inner-img">
                         <div class="item__inner-content">
@@ -82,6 +104,7 @@
         </div>
     </section>
 
+    {% if max_bgs > 9 %}
     <section class="buttons">
         <div class="container">
             <div class="button__inner">
@@ -91,6 +114,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     {% endblock %}
 
     {% block line %}
@@ -104,7 +128,7 @@
     <section class="hidden_form">
         <div class="container">
             <div class="hidden_form-background"></div>
-            <form action={% url "catalog" %} method="post" class="footer__form">
+            <form action={% url "catalog" %} method="POST" class="footer__form">
                 {% csrf_token %}
                 <div class="title_and_cross_wrapper">
                     <div class="footer_form-title">Свяжитесь с нами</div>
@@ -125,7 +149,7 @@
                     {{form.message}}
                 </div>
                 <div class="footer__form-btn-wrapper">
-                    <input type="submit" value="Отправить" class="footer__form-btn">
+                    <input type="submit" value="Отправить" name="suggestion_bg" class="footer__form-btn">
                 </div>
             </form>
         </div>
@@ -152,7 +176,7 @@
                         </a>
                     </li>
                 </ul>
-                
+
                 {% if request.path == '/catalog/' %}
                 <ul class="footer__inner-download_menu">
                     <li class="footer__inner-download_menu-item">

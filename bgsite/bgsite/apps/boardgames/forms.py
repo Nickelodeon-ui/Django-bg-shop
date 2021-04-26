@@ -8,6 +8,9 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Customer
 
+class Search_BG_form(forms.Form):
+    bg_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        "class": "search_form_input", "placeholder": "Введите название игры"}))
 
 class Submit_BG_form(forms.Form):
     customer_name = forms.CharField(required=False)
