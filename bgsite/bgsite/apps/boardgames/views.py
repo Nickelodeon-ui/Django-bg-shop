@@ -3,6 +3,7 @@ import os
 import csv
 import json
 import io
+from pathlib import Path
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
@@ -14,16 +15,13 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import ListView, DetailView, FormView, View
-from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse,FileResponse
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LogoutView
-from django.contrib.auth.views import LoginView
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse
 
-from .models import BoardGame, Customer, Cart, CartProduct
-from .forms import Submit_BG_form, CustomerForm, MyLoginForm, Search_BG_form
+from .models import BoardGame, Cart, CartProduct, Order
+from .forms import Submit_BG_form, Search_BG_form
 from .mixins import SuggestionFormMixin, CartMixin
 
 
@@ -87,12 +85,6 @@ class SearchForBGView(SuggestionFormMixin, CartMixin, View):
 
             max_searched_bgs = len(qs)
 
-
-
-            # Переписать через paginator, т.к. при переходе назад в браузере
-            # не удаляются куки.
-            # Сначала лимитировать 9 показывать, а пагинировать по 3 выдавать
-
             request.session["max_searched_bgs"] = max_searched_bgs
             request.session["searched_val"] = searched_bg
 
@@ -126,14 +118,14 @@ class DownloadCSVView(View):
 class DownloadPDFView(View):
     
     def get(self, request, *args, **kwargs):
-        pdfmetrics.registerFont(TTFont('CustomFont', str(settings.PROJECT_ROOT) + "\\static\\boardgames\\fonts\\Vera.ttf"))
+        pdfmetrics.registerFont(TTFont('CustomFont', Path(str(settings.PROJECT_ROOT) + "/static/boardgames/fonts/Vera.ttf")))
         custom_p_style = ParagraphStyle('Custom_p_style', fontName='CustomFont', fontSize=11)
 
         qs = BoardGame.objects.get_queryset_with_url()
         buffer = io.BytesIO()
         
         doc = SimpleDocTemplate(buffer, rightMargin=0, leftMargin=0, topMargin=0, bottomMargin=0)
-
+        
         elements = []
         data = [
             [
@@ -153,8 +145,8 @@ class DownloadPDFView(View):
         t=Table(data, colWidths=[150, 55, 60, 300], rowHeights=55, splitByRow=True)
         t.setStyle(
             TableStyle([
-                ('BACKGROUND', (0, 0), (5, 0), colors.pink),
-                ('ALIGN', (0, 0), (5, 0), 'CENTER'),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.pink),
+                ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
                 ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
                 ('FONT', (0, 0), (-1, -1), 'CustomFont', 11)
             ])
@@ -175,51 +167,6 @@ class BoardGamesDetailView(CartMixin, SuggestionFormMixin, DetailView):
 
     def get_queryset(self):
         return super().get_queryset().filter(slug__exact=self.kwargs.get("slug"))
-
-
-class RegistrationFormView(FormView):
-
-    form_class = CustomerForm
-    template_name = "boardgames/registration.html"
-    success_url = reverse_lazy("catalog")
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            # Если пользователь уже есть в БД
-            user = authenticate(
-                username=form.cleaned_data["username"], password=form.cleaned_data["password1"])
-            if user is not None:
-                login(request, user)
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                # создается объект user из формы и сигнал post_save (created=True) создает связь one to one
-                user = form.save()
-                # Для предотвращения ошибки получаем созданный объект из БД, потому что пока что у нас в user лежит объект
-                # без поля One to one (которое задастся путем сигнала-ресивера), а просто объект класса user - для доступа к полям address и phone
-                user.refresh_from_db()
-                address = form.cleaned_data["address"]
-                phone = form.cleaned_data["phone"]
-                user.customer.address = address
-                user.customer.phone = phone
-                user.save()
-                login(request, user)
-                return HttpResponseRedirect(self.get_success_url())
-        else:
-            # return HttpResponseRedirect(self.request.path_info)
-            return render(request, "boardgames/registration.html", {"form": form})
-
-
-class MyLogoutView(LogoutView):
-    next_page = reverse_lazy("catalog")
-
-
-class MyLoginView(LoginView):
-    authentication_form = MyLoginForm
-    template_name = "boardgames/login.html"
-
-    def get_success_url(self):
-        return reverse_lazy("catalog")
 
 
 class CartView(CartMixin, SuggestionFormMixin, View):
@@ -248,8 +195,8 @@ class AddToCartView(CartMixin, View):
 
         self.cart.save()
         messages.add_message(request, messages.INFO,
-                             "Товар был добавлен в корзину")
-        return HttpResponseRedirect(reverse_lazy('one_bg', kwargs={"slug": self.kwargs.get("slug")}))
+                             f"Товар \"{bg.name}\" был добавлен в корзину")
+        return HttpResponseRedirect(reverse_lazy('boardgames:one_bg', kwargs={"slug": self.kwargs.get("slug")}))
 
 
 class RemoveFromCartView(CartMixin, View):
@@ -264,8 +211,8 @@ class RemoveFromCartView(CartMixin, View):
 
         self.cart.save()
         messages.add_message(request, messages.INFO,
-                             "Товар был удалён из корзины")
-        return HttpResponseRedirect(reverse_lazy('cart'))
+                             f"Товар \"{bg.name}\" был удалён из корзины")
+        return HttpResponseRedirect(reverse_lazy('boardgames:cart'))
 
 
 class UpdateCartView(CartMixin, View):
@@ -277,28 +224,51 @@ class UpdateCartView(CartMixin, View):
 
             old_name = old_val[0]
             new_name = new_val[0]
+            
             old_qty = old_val[1]
             new_qty = int(new_val[1])
 
             if old_name == new_name and old_qty != new_qty:
                 bg = BoardGame.objects.get(name=old_name)
-                cart_product = self.cart.products.filter(boardgame=bg).first()
-                cart_product.qty = new_qty
-
-                cart_product.save()
-                self.cart.save()
+                if new_qty <= bg.quantity:
+                    cart_product = self.cart.products.filter(boardgame=bg).first()
+                    cart_product.qty = new_qty
+                    cart_product.save()
+                    messages.add_message(request, messages.INFO,
+                             f"Количество для игры \"{bg.name}\" обновлено успешно")
+                else:
+                    messages.add_message(request, messages.WARNING,
+                             f"Запрашиваемое количество для игры \"{bg.name}\" больше, чем имеется на складе (максимум-{bg.quantity})")                   
+            self.cart.save()
         # Сделать проверку на правильность выполненности view
 
         # Для случая, когда все хорошо
         response = {
             'status': 1,
             'message': 'Всё хорошо',
-            'url': str(reverse_lazy('cart'))
+            'url': str(reverse_lazy('boardgames:cart'))
         }
 
-        messages.add_message(request, messages.INFO,
-                             "Корзина обновлена успешно")
         return HttpResponse(json.dumps(response), content_type='application/json')
+
+class SetOrderView(CartMixin, View):
+    def get (self, request, *args, **kwargs):
+        self.cart.in_order = True
+        order = Order.objects.create(cart=self.cart)
+        self.cart.save()
+        messages.add_message(request, messages.INFO,
+                             f"Ваш заказ оформлен и добавлен в список заказов")
+        return HttpResponseRedirect(reverse_lazy('boardgames:cart'))
+
+class ListOrderView(SuggestionFormMixin, CartMixin, View):
+    def get(self, request, *args, **kwargs):
+        qs = Order.objects.filter(cart__owner__user=request.user)
+        data = {
+            "orders": qs,
+            "form": self.get_form(),
+            "cart": self.cart
+        }
+        return render(request, "boardgames/orders_list.html", context=data)
 
 
 class BggHot15View(CartMixin, SuggestionFormMixin, View):

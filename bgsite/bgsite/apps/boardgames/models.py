@@ -1,13 +1,12 @@
 # pylint: skip-file
 
-from django.core.validators import MinValueValidator
 from django.db import models
+from django.core.validators import MinValueValidator
 from django.utils import timezone
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.db.models import Sum, Count
+
+from login_registration.models import Customer
 
 
 class BoardGameManager(models.Manager):
@@ -44,7 +43,7 @@ class BoardGame(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("one_bg", kwargs={"slug": str(self.slug)})
+        return reverse("boardgames:one_bg", kwargs={"slug": str(self.slug)})
 
 
 class CartProduct(models.Model):
@@ -64,7 +63,7 @@ class CartProduct(models.Model):
 
 
 class Cart(models.Model):
-    owner = models.ForeignKey("Customer", verbose_name=(
+    owner = models.ForeignKey("login_registration.Customer", verbose_name=(
         "Владелец"), on_delete=models.CASCADE, null=True)
     products = models.ManyToManyField(
         "CartProduct", verbose_name=("Товары в корзине"), blank=True)
@@ -96,16 +95,10 @@ class Cart(models.Model):
                 self.total_product = 0
         super().save(*args, **kwargs)
 
-class Customer(models.Model):
-    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=models.CASCADE)
-    address = models.CharField(max_length=255, verbose_name="Адрес")
-    phone = models.CharField(max_length=20, verbose_name="Телефон")
+class Order(models.Model):
+    cart = models.ForeignKey("Cart", verbose_name="Корзина", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Это пользователь {self.user.username}: {self.user.first_name} {self.user.last_name}"
-    
-@receiver(post_save, sender=User)
-def user_save_handler(sender, instance, created, **kwargs):
-    if created:
-        Customer.objects.create(user=instance)
-    instance.customer.save()   # --- Хз
+    def __str__(self) -> str:
+        return f"Это заказ \"{self.cart.owner.user.username}\" и \
+        в нём {self.cart.total_product} товаров на сумму {self.cart.final_price} (создан в {self.created})"

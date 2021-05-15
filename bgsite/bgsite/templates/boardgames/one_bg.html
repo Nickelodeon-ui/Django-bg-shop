@@ -32,10 +32,10 @@
                     <hr>
                     <div class="bg_price">{{boardgame.price}}<span class="currency"> руб.</span></div>
                     {% if boardgame not in cart.products.all|get_all_from_cart_products %}
-                    <div class="link_wrapper"><a href="{% url 'add_to_cart' slug=boardgame.slug %}">
+                    <div class="link_wrapper"><a href="{% url 'boardgames:add_to_cart' slug=boardgame.slug %}">
                             <span class="add_to_cart_link">Добавить в корзину</span></a></div>
                     {% else %}
-                    <div class="link_wrapper"><a href="{% url 'cart' %}">
+                    <div class="link_wrapper"><a href="{% url 'boardgames:cart' %}">
                             <span class="check_cart_link">Уже в корзине</span></a></div>
                     {% endif %}
                     <hr>

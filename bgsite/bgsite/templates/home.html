@@ -28,19 +28,19 @@
     <header class="header">
         <div class="container">
             <div class="header__inner">
-                <a href={% url 'catalog' %} class="logo">
+                <a href={% url 'boardgames:catalog' %} class="logo">
                     <img id=temp src="{% static '/boardgames/img/logo.png' %}" alt="logo" class="logo__img">
                 </a>
 
                 <nav class="menu">
                     <ul class="menu__list">
                         <li class="menu__list-item">
-                            <a href="{% url 'hot15bgg' %}" class="menu__list-link">
+                            <a href="{% url 'boardgames:hot15bgg' %}" class="menu__list-link">
                                 Топ 15 BGG
                             </a>
                         </li>
                         <li id="basket" class="menu__list-item">
-                            <a href="{% url 'cart' %}" class="menu__list-link">
+                            <a href="{% url 'boardgames:cart' %}" class="menu__list-link">
                                 Корзина {% if cart.total_product %} {{cart.total_product}} {% endif %}
                             </a>
                         </li>
@@ -49,10 +49,11 @@
 
                 <div class="user_nav">
                     {% if request.user.is_authenticated %}
-                    <a href="{% url 'logout' %}" class="user_nav-link">Выход</a>
+                    <a href="{% url 'boardgames:list_order' %}" class="user_nav-link">Просмотреть заказы</a>
+                    <a href="{% url 'login_registration:logout' %}" class="user_nav-link">Выход</a>
                     {% else %}
-                    <a href={% url 'register' %} class="user_nav-link">Регистрация</a>
-                    <a href={% url 'login' %} class="user_nav-link">Вход</a>
+                    <a href={% url 'login_registration:register' %} class="user_nav-link">Регистрация</a>
+                    <a href={% url 'login_registration:login' %} class="user_nav-link">Вход</a>
                     {% endif %}
                 </div>
             </div>
@@ -63,13 +64,15 @@
     {% if search_form %}
     <section class="search_form">
         <div class="container">
-            <form action={% url 'search_for_bg' %} method='POST' class="search_form">
+            <form action={% url 'boardgames:search_for_bg' %} method='POST' class="search_form">
                 <div class="search_form_inner">
                     {% csrf_token %}
                     {{search_form.bg_name}}
-                    <div class="submit_wraper">
-                        <input class="search_form_btn" type="submit" value=""></input>
-                        <input type="image" src={% static 'boardgames/img/search_icon.png' %} width='30'></input>
+                    <div class="submit_wrapper">
+                        <div class="submit_wraper__inner">
+                            <input class="search_form_btn" type="submit" value=""></input>
+                            <input type="image" class="search_form_icon" src={% static 'boardgames/img/search_icon.png' %} width='30'></input>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -82,7 +85,7 @@
     <section class="items">
         <div class="container">
             {% if not boardgames %}
-            <h1>Похоже таких игр нет, но вы можете выбрать что-либо из <a href={% url 'catalog' %}><u>нашего каталога</u></a></h1>
+            <h1>Похоже таких игр нет, но вы можете выбрать что-либо из <a href={% url 'boardgames:catalog' %}><u>нашего каталога</u></a></h1>
             {% endif %}
             <div class="items__inner" id="items__inner">
 
@@ -128,7 +131,7 @@
     <section class="hidden_form">
         <div class="container">
             <div class="hidden_form-background"></div>
-            <form action={% url "catalog" %} method="POST" class="footer__form">
+            <form action={% url "boardgames:catalog" %} method="POST" class="footer__form">
                 {% csrf_token %}
                 <div class="title_and_cross_wrapper">
                     <div class="footer_form-title">Свяжитесь с нами</div>
@@ -161,17 +164,17 @@
 
                 <ul class="footer__inner-menu">
                     <li class="footer__inner-menu-item">
-                        <a href="" class="footer__inner-menu-link">
+                        <a href="#" class="footer__inner-menu-link">
                             О нас
                         </a>
                     </li>
                     <li class="footer__inner-menu-item">
-                        <a href="" class="footer__inner-menu-link">
+                        <a href="#" class="footer__inner-menu-link">
                             FAQ
                         </a>
                     </li>
                     <li class="footer__inner-menu-item">
-                        <a href="" class="footer__inner-menu-link">
+                        <a href="#" class="footer__inner-menu-link">
                             Контакты
                         </a>
                     </li>
@@ -180,12 +183,12 @@
                 {% if request.path == '/catalog/' %}
                 <ul class="footer__inner-download_menu">
                     <li class="footer__inner-download_menu-item">
-                        <a href={% url 'download_csv' %} class="footer__inner-download_menu-link">
+                        <a href={% url 'boardgames:download_csv' %} class="footer__inner-download_menu-link">
                             Скачать каталог (CSV)
                         </a>
                     </li>
                     <li class="footer__inner-download_menu-item">
-                        <a href={% url 'download_pdf' %} class="footer__inner-download_menu-link">
+                        <a href={% url 'boardgames:download_pdf' %} class="footer__inner-download_menu-link">
                             Скачать каталог (PDF)
                         </a>
                     </li>

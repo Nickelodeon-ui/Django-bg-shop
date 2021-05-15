@@ -38,3 +38,20 @@ button {
     font-size: 20px;
     color: #0f5132;
 }
+
+.update_cart_set_order_wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.set_order_link {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    padding: 11px 23px;
+    border: 1px solid;
+    border-radius: 7px;
+    font-family: 'Andika New Basic', sans-serif;
+    font-style: normal;
+    color: rgb(75, 60, 41);
+}

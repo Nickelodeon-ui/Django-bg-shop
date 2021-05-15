@@ -5,9 +5,6 @@ from django.urls import path
 from .views import (
     BoardGamesListView,
     BoardGamesDetailView,
-    RegistrationFormView,
-    MyLogoutView,
-    MyLoginView,
     CartView,
     AddToCartView,
     RemoveFromCartView,
@@ -18,6 +15,8 @@ from .views import (
     DownloadPDFView,
     SearchForBGView,
     MoreSearchedBoardGamesView,
+    SetOrderView,
+    ListOrderView,
     )
 
 
@@ -25,12 +24,11 @@ urlpatterns = [
     path('', BoardGamesListView.as_view(), name="catalog"),
     path('search-for-bg', SearchForBGView.as_view(), name='search_for_bg'),
     path("more-bg/<int:lower_border>", MoreBoardGamesView.as_view(), name="more_bg"),
-     path("more-searched-bg/<int:lower_border>", MoreSearchedBoardGamesView.as_view(), name="more_searched_bg"),
-    path("register", RegistrationFormView.as_view(), name="register"),
-    path("login", MyLoginView.as_view(), name="login"),
-    path("logout", MyLogoutView.as_view(), name="logout"),
+    path("more-searched-bg/<int:lower_border>", MoreSearchedBoardGamesView.as_view(), name="more_searched_bg"),
     path("cart", CartView.as_view(), name="cart"),
     path("cart/update-cart", UpdateCartView.as_view(), name="update_cart"),
+    path("cart/list-order", ListOrderView.as_view(), name="list_order"),
+    path("cart/set-order", SetOrderView.as_view(), name="set_order"),
     path("add-to-cart/<slug:slug>", AddToCartView.as_view(), name="add_to_cart"),
     path("remove-from-cart/<slug:slug>", RemoveFromCartView.as_view(), name="remove_from_cart"),
     path("hot15bgg", BggHot15View.as_view(), name="hot15bgg"),

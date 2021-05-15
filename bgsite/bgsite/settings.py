@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'bgsite.apps.login_registration.apps.LoginRegistrationConfig',
     'bgsite.apps.boardgames.apps.BoardgamesConfig',
     'django.contrib.admin',
     'django.contrib.auth',

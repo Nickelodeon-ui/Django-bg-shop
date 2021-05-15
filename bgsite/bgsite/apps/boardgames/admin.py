@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from .models import BoardGame, Customer, Cart, CartProduct
+from login_registration.models import Customer
+from .models import BoardGame, Cart, CartProduct, Order
 
 
 # Register your models here.
@@ -23,6 +24,16 @@ class UserAdmin(BaseUserAdmin):
         CustomerInline,
     ]
 
+class CartInline(admin.StackedInline):
+    model = Cart
+    can_delete = False
+    verbose_name_plural = "Корзина"
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [
+        CartInline,
+    ]
 
 admin.site.register(BoardGame)
 
@@ -31,3 +42,5 @@ admin.site.register(User, UserAdmin)
 
 admin.site.register(Cart, CartAdmin)
 admin.site.register(CartProduct)
+
+admin.site.register(Order)

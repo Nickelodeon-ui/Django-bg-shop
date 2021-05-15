@@ -3,7 +3,7 @@
 {% block page_title %}<title>Вход в аккаунт</title>{% endblock page_title %}
 
 {% block form %}
-<form action={% url "login" %} method="post">
+<form action={% url "login_registration:login" %} method="post">
     <p class="form_title">ВОЙДИТЕ В АККАУНТ</p>
     {% csrf_token %}
     {% for field in form %}
@@ -14,7 +14,7 @@
     <input type="submit" value="Вход" id="enter_btn">
     <br>
     <div class="to_register_wrapper">
-        Ещё нет аккаунта?<a href={% url "register" %} class="login"> <b><u>Нажмите сюда</u></b></a>
+        Ещё нет аккаунта?<a href={% url "login_registration:register" %} class="login"> <b><u>Нажмите сюда</u></b></a>
     </div>
 </form>
 {% endblock form %}

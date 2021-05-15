@@ -35,7 +35,7 @@
 
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-success alert-dismissible fade show alert_inner" role="alert">
+        <div class="alert {% if message.tags == "info" %} alert-success {% else %} alert-warning {%endif%} alert-dismissible fade show alert_inner" role="alert">
             <div class="message_wrapper">
                 {{message.message}}
             </div>
@@ -73,7 +73,7 @@
                         </div>
                     </td>
                     <td>{{item.price_for_product}}р.</td>
-                    <td><a href={% url 'remove_from_cart' slug=item.boardgame.slug %}><img
+                    <td><a href={% url 'boardgames:remove_from_cart' slug=item.boardgame.slug %}><img
                                 src="{% static 'boardgames/img/bin.png'%}" width="40px"></a></td>
                 </tr>
                 {% endfor %}
@@ -83,7 +83,9 @@
                 </tr>
             </tbody>
         </table>
+        <div class="update_cart_set_order_wrapper">
         <button class="update_btn">Обновить корзину</button>
+        <a href={%url "boardgames:set_order" %} class="set_order_link"> Оформить заказ </a>
         {% endif %}
     </div>
 </section>

@@ -13,7 +13,7 @@
     <div class="container">
         <div class="registration_form_wrapper">
             {% block form %}
-            <form action={% url 'register' %} method="post">
+            <form action={% url 'login_registration:register' %} method="post">
                 <p class="form_title">СОЗДАЙТЕ АККАУНТ</p>
                 {% csrf_token %}
                 {% for field in form %}
@@ -24,7 +24,7 @@
                 <input type="submit" value="Регистрация" class="submit_btn">
                 <br>
                 <div class="to_login_wrapper">
-                    Уже есть аккаунт?<a href={% url 'login' %} class="login"> <b><u>Нажмите сюда</u></b></a>
+                    Уже есть аккаунт?<a href={% url 'login_registration:login' %} class="login"> <b><u>Нажмите сюда</u></b></a>
                 </div>
             </form>
             {% endblock form %}

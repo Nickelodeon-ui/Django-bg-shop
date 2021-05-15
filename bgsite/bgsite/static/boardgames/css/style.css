@@ -115,32 +115,38 @@ a:hover {
 
 .search_form {
     padding-bottom: 20px;
-}
-
-.search_form_inner {
-    display: flex;
-    width: fit-content;
+    display: table;
     margin: 0 auto;
 }
 
+.search_form_inner {
+    display: table-row;
+    align-items: center;
+}
+
 .search_form_input {
+    display: table-cell;
     padding: 6px;
     min-width: 400px;
     min-height: 40px;
-    vertical-align: top;
     border: 1px solid rgb(165, 159, 152);
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
-.submit_wraper {
+.submit_wrapper {
+    display: table-cell;
+    height: 40px;
+}
+
+.submit_wraper__inner {
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.submit_wraper>input[type='image'] {
+.search_form_icon {
     position: relative;
     right: 35px;
 }

@@ -7,8 +7,10 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View
 from django.views.generic.base import ContextMixin
 
+from login_registration.models import Customer
 from .forms import Submit_BG_form
-from .models import BoardGame, Customer, Cart, CartProduct
+from .models import BoardGame, Cart, CartProduct
+
 
 class SuggestionFormMixin(FormMixin):
     
